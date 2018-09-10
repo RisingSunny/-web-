@@ -1,0 +1,50 @@
+语音助手有两方面的需求：
+一、跳转到指定页面
+二、寻找住户xx（或者寻找车辆xx等，后面再进行讨论）
+
+当后台在完成中文分词等操作，需要使前端做出响应时，回传给前端指定格式的JSON，前端JavaScript进行解析并做出相应操作
+JSON格式如下：
+
+status属性，对应状态码
+result为一个json对象，内含type, operation, object属性
+
+后台解析失败：
+status = 0
+  {"status":0}
+
+后台理解寻找页面操作：
+status = 1; result中type为page, operation为jumping, object对应页面的数字序号（字符型）, 如：
+  {"result":{"type":"page","operation":"jumping","object":"3"},"status":1}
+
+后台理解寻找住户操作：
+status = 2; result中type为resident, operation为searching, object对应居民的名字, 如：
+  {"result":{"type":"resident","operation":"searching","object":"李丽"},"status":2}
+
+
+
+寻找页面操作代码示例：
+
+    protected String return_json(){
+        JSONObject return_json = new JSONObject();
+
+        JSONObject suc_result = new JSONObject();
+        try {
+            suc_result.put("operation", "jumping");
+            suc_result.put("type", "page");
+            suc_result.put("object", "2");
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        String Str_sr_json= "";
+//        Str_sr_json = suc_result.toString();
+//        System.out.println(Str_sr_json);
+
+        return_json.put("status", 1);
+        return_json.put("result", suc_result);
+
+        Str_sr_json = return_json.toString();
+        System.out.println(Str_sr_json);
+        return Str_sr_json;
+    }
